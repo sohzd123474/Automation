@@ -32,9 +32,11 @@ This Excel VBA tool allows users to **highlight and populate cells** in multiple
 
 1. **Open `Highlighter.xlsm`** containing the `HighlighterSetting` sheet.
 2. **Open any target workbook(s)** you wish to apply formatting to.
-3. Press `Alt + F8` and run:
+3. On the `Main` sheet of `Highlighter.xlsm`, click the **"Highlighter"** button to launch the tool  
+   *– OR –* press `Alt + F8` and run:
    ```vb
    LaunchHighlighterForm
+   
 4. In the form:
    - Select the **workbook** to apply changes to
    - Select one or more **sheets** (multi-select supported)
