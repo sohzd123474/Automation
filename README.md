@@ -104,7 +104,6 @@ No external libraries required.
 ## 🚧 To-Do / Suggestions
 
 - [ ] Add support for **case-insensitive** matching
-- [ ] Allow **custom column** matching (not just Column A)
 - [ ] Add **preview mode** before applying changes
 - [ ] Support for **auto-exporting** modified sheets
 
