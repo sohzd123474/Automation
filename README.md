@@ -1,91 +1,115 @@
-🟨 Excel Highlighter Tool — UserForm Edition
-This tool lets you highlight and populate values in one or more open Excel sheets using a master HighlighterSetting sheet and a simple pop-up form.
+# 🟨 Excel Highlighter Tool (UserForm Edition)
 
-🧩 Features
-🎨 Highlight cells based on matching item names
+This Excel VBA tool allows users to **highlight and populate cells** in multiple worksheets based on a centralized `HighlighterSetting` sheet using a **simple user-friendly form interface**.
 
-📥 Insert values into any columns defined by the user
+---
 
-✅ Point-and-click selection of workbooks and sheets
+## ✨ Features
 
-💡 Dynamically driven by the contents of the HighlighterSetting sheet — no code changes needed to add more fields
+- 🎯 Match items in Column A of target sheets
+- 🎨 Apply cell background color based on your `HighlighterSetting`
+- 📥 Dynamically insert values into specified columns
+- ✅ Supports multi-sheet updates via a pop-up UserForm
+- ⚡ No coding needed to update settings – just edit the sheet
 
-📑 HighlighterSetting Sheet Structure
-Located in your main workbook (e.g. Book1.xlsm):
+---
 
-A (Item)	B (Color Cell)	C	D	E	...
-Apple	(filled blue)	1	Cat	Yes	
-Banana	(filled green)	2	Dog	No	
-...	...	...	...	...	
+## 📄 HighlighterSetting Sheet Format
 
-Row 1 (from column C onward): Target column letters in the destination sheets (A, B, C, etc.)
+| A (Items) | B (Color Cell) | C (A) | D (B) | E (C) | ... |
+|-----------|----------------|-------|-------|-------|-----|
+| Apple     | (filled blue)  | 1     | Cat   | Yes   | ... |
+| Banana    | (filled green) | 2     | Dog   | No    | ... |
 
-Rows 2+:
+- **Column A**: Item names to match in your data sheets
+- **Column B**: Cells with the background color to apply
+- **Row 1 (from Column C onward)**: Excel column letters indicating where to insert values (e.g., `A`, `B`, `F`)
+- **Rows 2+**: Values to insert for each matched item
 
-Column A: Item names to match (in Column A of destination sheet)
+---
 
-Column B: Cell fill color to apply to matched item row
+## 📦 How to Use
 
-Columns C+: Values to insert into the columns specified in Row 1
+1. **Open `Book1.xlsm`** containing the `HighlighterSetting` sheet.
+2. **Open any target workbook(s)** you wish to apply formatting to.
+3. Press `Alt + F8` and run:
+   ```vb
+   LaunchHighlighterForm
+4. In the form:
+   - Select the **workbook** to apply changes to
+   - Select one or more **sheets** (multi-select supported)
+   - Click **Apply Highlights**
 
-🧑‍💻 How to Use
-Set up your HighlighterSetting sheet:
+---
 
-Fill item names in Column A
+## 🧠 Logic Overview
 
-Fill color cells in Column B
+- Items in **Column A** of the `HighlighterSetting` sheet are matched against **Column A** of the target sheets.
+- If matched:
+  - The corresponding **fill color** (from **Column B**) is applied to the matched row’s Column A.
+  - Values from Columns **C onward** are inserted into the corresponding columns, as defined by the **column letters in Row 1** (e.g., “B”, “D”, “F”).
+- Matching is **case-sensitive** by default.
 
-Type column letters in Row 1 (C1, D1, E1, etc.)
+---
 
-Below each, type the value to insert for each item
+## 🛠 Developer Notes
 
-Open your data workbook(s) — ensure the sheets you want to update are visible.
+- **Main UserForm**: `frmHighlighterSelector`
+- **Launcher Macro**:
+  ```vba
+  Sub LaunchHighlighterForm()
+      frmHighlighterSelector.Show
+  End Sub
+All logic runs from the workbook containing the `HighlighterSetting` sheet.
 
-Press Alt + F8 and run:
+No external libraries required.
 
-vb
-Copy
-Edit
-LaunchHighlighterForm
-In the UserForm:
+---
 
-Select the workbook you want to update
+## 📋 Example
 
-Ctrl+click the sheets you want to process
+### HighlighterSetting Sheet
 
-Click Apply Highlights
+| A (Item) | B (Color) | C (A) | D (B) | E (C) |
+|----------|-----------|--------|--------|--------|
+| Apple    | (Blue)    | 1      | Cat    | Yes    |
+| Banana   | (Green)   | 2      | Dog    | No     |
 
-⚙️ Requirements
-The macro must be run from the workbook containing the HighlighterSetting sheet
+### Target Sheet (Before)
 
-Target sheets must have data in column A (item names)
+| A       | B | C | D |
+|---------|---|---|---|
+| Apple   |   |   |   |
+| Banana  |   |   |   |
 
-Column letters in Row 1 (C1 onward) must match valid Excel columns in the target sheets
+### Target Sheet (After Applying)
 
-✅ Example
-Suppose your target sheet has:
+| A       | B | C   | D    |
+|---------|---|-----|------|
+| Apple   | 1 | Cat | Yes  |
+| Banana  | 2 | Dog | No   |
 
-A	B	C	D	E
-Apple				
-Banana				
+---
 
-And your HighlighterSetting sheet has:
+## ✅ Requirements
 
-A (Item)	B (Color)	C (A)	D (B)	E (C)
-Apple	(Blue)	1	Cat	Yes
-Banana	(Green)	2	Dog	No
+- Microsoft Excel (with VBA support)
+- Macros must be enabled
+- Target sheets must contain item names in **Column A**
 
-Then clicking “Apply Highlights” will:
+---
 
-Fill column A with the color
+## 🚧 To-Do / Suggestions
 
-Write 1, Cat, and Yes into columns A, B, and C respectively — on the same row as the matched item
+- [ ] Add support for **case-insensitive** matching
+- [ ] Allow **custom column** matching (not just Column A)
+- [ ] Add **preview mode** before applying changes
+- [ ] Support for **auto-exporting** modified sheets
 
-🛠 Developer Notes
-Form name: frmHighlighterSelector
+---
 
-Launch macro: LaunchHighlighterForm
+## 📎 License
 
-Populates dynamically based on sheet structure; no changes needed if columns are added
-
-Uses Range(colLetter & "1").Column to resolve actual target columns
+This software is not open source.  
+Use, distribution, or modification requires a commercial license.  
+For inquiries, contact the author.
