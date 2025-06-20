@@ -1,116 +1,113 @@
 # 🟨 Excel Highlighter Tool (UserForm Edition)
 
-This Excel VBA tool allows users to **highlight and populate cells** in multiple worksheets based on a centralized `HighlighterSetting` sheet using a **simple user-friendly form interface**.
+This Excel VBA utility lets you **highlight and populate cells** across one or many worksheets from a single, easy‑to‑edit `HighlighterSetting` sheet.  
+Everything is driven from a pop‑up form—no code tweaks required after setup.
 
 ---
 
-## ✨ Features
-
-- 🎯 Match items in Column A of target sheets
-- 🎨 Apply cell background color based on your `HighlighterSetting`
-- 📥 Dynamically insert values into specified columns
-- ✅ Supports multi-sheet updates via a pop-up UserForm
-- ⚡ No coding needed to update settings – just edit the sheet
+## ✨ Key Features
+|  |  |
+|--|--|
+| 🔍 **Column‑letter search** &nbsp;| Put the column letter to search in **`HighlighterSetting!A1`** (e.g. `C`). The macro hunts that column in each selected sheet. |
+| 🎨 **Colour transfer** &nbsp;| Each matched cell gets the fill colour stored in Column B of the setting sheet. |
+| 📥 **Dynamic data insert** &nbsp;| Row 1 from **C1→** lists destination column letters. Rows 2↓ hold the values that will be dropped into those columns. |
+| 🗂️ **Multi‑sheet update** &nbsp;| Select any number of open sheets via the UserForm and process them in one click. |
+| ⚡ **No code edits** &nbsp;| Change the setting sheet, press the button—done. |
 
 ---
 
-## 📄 HighlighterSetting Sheet Format
+## 📄 HighlighterSetting Sheet Layout
 
-| A (Items) | B (Color Cell) | C (A) | D (B) | E (C) | ... |
-|-----------|----------------|-------|-------|-------|-----|
-| Apple     | (filled blue)  | 1     | Cat   | Yes   | ... |
-| Banana    | (filled green) | 2     | Dog   | No    | ... |
+| A (search col) | B (colour) | C → (target columns) |
+|---------------|-----------|----------------------|
+| **C** *(cell A1)* |   | **B** | **D** | **F** |
+| Apple  | *(blue fill)*  | 1 | Cat | Yes |
+| Banana | *(green fill)* | 2 | Dog | No  |
 
-- **Column A**: Item names to match in your data sheets
-- **Column B**: Cells with the background color to apply
-- **Row 1 (from Column C onward)**: Excel column letters indicating where to insert values (e.g., `A`, `B`, `F`)
-- **Rows 2+**: Values to insert for each matched item
+*Legend*
+
+* **A1** – Column letter you want to search in every target sheet.  
+* **Row 1 from C1→** – Letters of columns that will receive data (any number).  
+* **Column A (row 2↓)** – Values to hunt for in the chosen search column.  
+* **Column B** – Fill colours to copy to the matched cells.  
+* **Columns C→** – Data that will be inserted into the columns named in Row 1.
 
 ---
 
 ## 📦 How to Use
 
-1. **Open `Highlighter.xlsm`** containing the `HighlighterSetting` sheet.
-2. **Open any target workbook(s)** you wish to apply formatting to.
-3. On the `Main` sheet of `Highlighter.xlsm`, click the **"Highlighter"** button to launch the tool  
-   *– OR –* press `Alt + F8` and run:
+1. **Open `Highlighter.xlsm`** (contains the macro and `HighlighterSetting` sheet).  
+2. **Open the workbook(s)** you want to update.  
+3. On the **`Main`** sheet click the **Highlighter** button *– or –* press **Alt + F8** and run:
    ```vb
    LaunchHighlighterForm
-   
-4. In the form:
-   - Select the **workbook** to apply changes to
-   - Select one or more **sheets** (multi-select supported)
+   ```
+4. In the form:  
+   - Choose the **workbook**  
+   - Tick one or more **sheets** (Ctrl‑click for multi‑select)  
    - Click **Apply Highlights**
 
 ---
 
 ## 🧠 Logic Overview
-
-- Items in **Column A** of the `HighlighterSetting` sheet are matched against **Column A** of the target sheets.
-- If matched:
-  - The corresponding **fill color** (from **Column B**) is applied to the matched row’s Column A.
-  - Values from Columns **C onward** are inserted into the corresponding columns, as defined by the **column letters in Row 1** (e.g., “B”, “D”, “F”).
-- Matching is **case-sensitive** by default.
+1. Reads the **search column letter** from `HighlighterSetting!A1`.  
+2. Finds that column in every selected sheet.  
+3. Walks each value in Column A (row 2↓):  
+   - Colours the matching cells with Column B’s fill colour.  
+   - Inserts the extra values (Cols C→) into the columns named in Row 1.  
+4. **No “first‑match only” limit**—every occurrence is processed.
 
 ---
 
 ## 🛠 Developer Notes
-
-- **Main UserForm**: `frmHighlighterSelector`
-- **Launcher Macro**:
-  ```vba
+* **UserForm:** `frmHighlighterSelector`  
+* **Launcher macro:**
+  ```vb
   Sub LaunchHighlighterForm()
       frmHighlighterSelector.Show
   End Sub
-All logic runs from the workbook containing the `HighlighterSetting` sheet.
-
-No external libraries required.
+  ```
+* Runs entirely from **Highlighter.xlsm**—no external libraries required.
 
 ---
 
-## 📋 Example
+## 📋 Worked Example
 
-### HighlighterSetting Sheet
+### Setting Sheet
+| A1 = **C** |   | C1 = **B** | D1 = **D** |
+|------------|---|------------|------------|
+| Apple      | 🔵 | 1 | Cat |
+| Banana     | 🟢 | 2 | Dog |
 
-| A (Item) | B (Color) | C (A) | D (B) | E (C) |
-|----------|-----------|--------|--------|--------|
-| Apple    | (Blue)    | 1      | Cat    | Yes    |
-| Banana   | (Green)   | 2      | Dog    | No     |
+### Target Sheet (before)
+| A | B | **C (Items)** | D |
+|---|---|---------------|---|
+|   |   | Apple         |   |
+|   |   | Banana        |   |
 
-### Target Sheet (Before)
-
-| A       | B | C | D |
-|---------|---|---|---|
-| Apple   |   |   |   |
-| Banana  |   |   |   |
-
-### Target Sheet (After Applying)
-
-| A       | B | C   | D    |
-|---------|---|-----|------|
-| Apple   | 1 | Cat | Yes  |
-| Banana  | 2 | Dog | No   |
+### Target Sheet (after)
+| A | B | **C (Items)** | D  |
+|---|---|---------------|----|
+|   | 1 | *(blue)* Apple| Cat|
+|   | 2 | *(green)*Banana|Dog|
 
 ---
 
 ## ✅ Requirements
-
-- Microsoft Excel (with VBA support)
-- Macros must be enabled
-- Target sheets must contain item names in **Column A**
+- Excel for Windows / Mac **with VBA**  
+- Macros enabled  
+- Target sheets must contain the column letter specified in `A1`
 
 ---
 
-## 🚧 To-Do / Suggestions
-
-- [ ] Add support for **case-insensitive** matching
-- [ ] Add **preview mode** before applying changes
-- [ ] Support for **auto-exporting** modified sheets
+## 🚧 Road‑map
+- [ ] Optional **case‑insensitive** matching  
+- [ ] **Preview / Dry‑run** mode  
+- [ ] Automatic **undo / backup**  
+- [ ] **Export** updated sheets to new files
 
 ---
 
 ## 📎 License
-
-This software is not open source.  
-Use, distribution, or modification requires a commercial license.  
-For inquiries, contact the author.
+**Commercial – All rights reserved.**  
+Redistribution or modification requires a commercial licence—contact the author for details.
